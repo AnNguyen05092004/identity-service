@@ -10,10 +10,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.time.LocalDate;
+import java.util.Optional;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -84,4 +87,31 @@ public class UserServiceTest {
         var exception = Assertions.assertThrows(AppException.class, () -> userService.createUser(userCreationRequest));
         assertThat(exception.getErrorCode().getCode()).isEqualTo(1001); // USER_EXISTS
     }
+
+    @Test
+    @WithMockUser(username = "annn") // Giả lập một user đã đăng nhập với username là "annn" để test phương thức getMyInfo, vì phương thức này cần lấy thông tin user từ SecurityContext
+    void getMyInfo_valid_success() {
+        // GIVEN
+        when (userRepository.findByUsername(userCreationRequest.getUsername())).thenReturn(Optional.of(user));
+
+        // WHEN
+        UserResponse response = userService.getMyInfo();
+
+        // THEN
+        assertThat(response.getUsername()).isEqualTo(userCreationRequest.getUsername());
+        assertThat(response.getId()).isEqualTo("5516fa1392ba");
+    }
+
+    @Test
+    @WithMockUser(username = "annn") // Giả lập một user đã đăng nhập với username là "annn" để test phương thức getMyInfo, vì phương thức này cần lấy thông tin user từ SecurityContext
+    void getMyInfo_userNotExist_fail() {
+        // GIVEN
+        when (userRepository.findByUsername(userCreationRequest.getUsername())).thenReturn(Optional.ofNullable(null));
+
+        // WHEN
+        var exception = Assertions.assertThrows(AppException.class, () -> userService.getMyInfo());
+        assertThat(exception.getErrorCode().getCode()).isEqualTo(1006); // USER_NOT_EXISTS
+
+    }
+
 }
