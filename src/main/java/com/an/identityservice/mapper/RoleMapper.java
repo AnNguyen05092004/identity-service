@@ -1,12 +1,11 @@
 package com.an.identityservice.mapper;
 
-import com.an.identityservice.dto.request.RoleRequest;
-import com.an.identityservice.dto.response.RoleResponse;
-import com.an.identityservice.entity.Role;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import java.lang.annotation.Target;
+import com.an.identityservice.dto.request.RoleRequest;
+import com.an.identityservice.dto.response.RoleResponse;
+import com.an.identityservice.entity.Role;
 
 @Mapper(componentModel = "spring") // báo cho MapStruct tạo bean cho mapper này
 public interface RoleMapper {

@@ -3,8 +3,6 @@ package com.an.identityservice.dto.response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.security.SecureRandom;
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -13,5 +11,4 @@ import java.security.SecureRandom;
 public class AuthenticationResponse {
     String token;
     boolean authenticated;
-
 }

@@ -1,6 +1,5 @@
 package com.an.identityservice.exception;
 
-
 // Custom exception class to handle application-specific errors
 public class AppException extends RuntimeException {
     private ErrorCode errorCode;

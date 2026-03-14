@@ -1,12 +1,11 @@
 package com.an.identityservice.entity;
 
+import java.util.Date;
+
 import jakarta.persistence.*;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.time.LocalDate;
-import java.util.Date;
-import java.util.Set;
 
 @Entity
 @Data
@@ -17,5 +16,6 @@ import java.util.Set;
 public class InvalidatedToken {
     @Id
     String id;
+
     Date expiryTime;
 }

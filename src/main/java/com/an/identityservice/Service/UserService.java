@@ -1,5 +1,14 @@
 package com.an.identityservice.Service;
 
+import java.util.HashSet;
+import java.util.List;
+
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.an.identityservice.dto.request.UserCreationRequest;
 import com.an.identityservice.dto.request.UserUpdateRequest;
 import com.an.identityservice.dto.response.UserResponse;
@@ -10,32 +19,25 @@ import com.an.identityservice.exception.ErrorCode;
 import com.an.identityservice.mapper.UserMapper;
 import com.an.identityservice.repository.RoleRepository;
 import com.an.identityservice.repository.UserRepository;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import java.util.HashSet;
-import java.util.List;
 
 @Service
-@RequiredArgsConstructor // Tự động tạo constructor với tất cả các trường được đánh dấu là final => không cần phải sử dụng @Autowired nữa, Spring sẽ tự động inject các dependency thông qua constructor
+@RequiredArgsConstructor // Tự động tạo constructor với tất cả các trường được đánh dấu là final => không cần phải sử
+// dụng @Autowired nữa, Spring sẽ tự động inject các dependency thông qua constructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class UserService {
 
-//    @Autowired
-//    private final
+    //    @Autowired
+    //    private final
     UserRepository userRepository;
     RoleRepository roleRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
-
 
     public UserResponse createUser(UserCreationRequest userCreationRequest) {
         log.info("Service: create user");
@@ -49,21 +51,24 @@ public class UserService {
 
         HashSet<String> roles = new HashSet<>();
         roles.add(Role.USER.name());
-        //user.setRoles(roles);
+        // user.setRoles(roles);
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
-    //@PreAuthorize("hasRole('ADMIN')") // Lọc trc, Chỉ cho phép người dùng có vai trò ADMIN truy cập vào phương thức này
+    // @PreAuthorize("hasRole('ADMIN')") // Lọc trc, Chỉ cho phép người dùng có vai trò ADMIN truy cập vào phương thức
+    // này
     @PreAuthorize("hasAuthority('APPROVE_POST')") // Phân quyền theo permission.
     public List<UserResponse> getUsers() {
         log.info("Getting all users");
         return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
     }
 
-    @PostAuthorize("returnObject.username == authentication.name") // Lọc sau, khi đó đã có giá trị trả về để đem ra so sánh
+    @PostAuthorize(
+            "returnObject.username == authentication.name") // Lọc sau, khi đó đã có giá trị trả về để đem ra so sánh
     public UserResponse getUser(String userid) {
         log.info("Getting user with id: {}", userid);
-        return userMapper.toUserResponse(userRepository.findById(userid).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTS)));
+        return userMapper.toUserResponse(
+                userRepository.findById(userid).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTS)));
     }
 
     public UserResponse getMyInfo() {

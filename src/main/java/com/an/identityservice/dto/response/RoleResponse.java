@@ -1,9 +1,9 @@
 package com.an.identityservice.dto.response;
 
+import java.util.Set;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.util.Set;
 
 @Data
 @Builder
@@ -15,7 +15,7 @@ public class RoleResponse {
     String description;
     Set<PermissionResponse> permissions;
 
-    //Khi Mapper sẽ convert:
-    //Role -> RoleResponse
-    //Permission -> PermissionResponse
+    // Khi Mapper sẽ convert:
+    // Role -> RoleResponse
+    // Permission -> PermissionResponse
 }

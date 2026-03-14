@@ -1,10 +1,12 @@
 package com.an.identityservice.Service;
 
-import com.an.identityservice.dto.request.UserCreationRequest;
-import com.an.identityservice.dto.response.UserResponse;
-import com.an.identityservice.entity.User;
-import com.an.identityservice.exception.AppException;
-import com.an.identityservice.repository.UserRepository;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+import java.time.LocalDate;
+import java.util.Optional;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,15 +16,16 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
-import java.time.LocalDate;
-import java.util.Optional;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.assertj.core.api.Assertions.assertThat;
+import com.an.identityservice.dto.request.UserCreationRequest;
+import com.an.identityservice.dto.response.UserResponse;
+import com.an.identityservice.entity.User;
+import com.an.identityservice.exception.AppException;
+import com.an.identityservice.repository.UserRepository;
 
 @SpringBootTest
-@TestPropertySource("/test.properties") // Đọc cấu hình file để overide file application.yaml, ví dụ như cấu hình datasource để kết nối đến database test thay vì database production
+@TestPropertySource(
+        "/test.properties") // Đọc cấu hình file để overide file application.yaml, ví dụ như cấu hình datasource để kết
+// nối đến database test thay vì database production
 public class UserServiceTest {
 
     @Autowired
@@ -89,10 +92,12 @@ public class UserServiceTest {
     }
 
     @Test
-    @WithMockUser(username = "annn") // Giả lập một user đã đăng nhập với username là "annn" để test phương thức getMyInfo, vì phương thức này cần lấy thông tin user từ SecurityContext
+    @WithMockUser(
+            username = "annn") // Giả lập một user đã đăng nhập với username là "annn" để test phương thức getMyInfo, vì
+    // phương thức này cần lấy thông tin user từ SecurityContext
     void getMyInfo_valid_success() {
         // GIVEN
-        when (userRepository.findByUsername(userCreationRequest.getUsername())).thenReturn(Optional.of(user));
+        when(userRepository.findByUsername(userCreationRequest.getUsername())).thenReturn(Optional.of(user));
 
         // WHEN
         UserResponse response = userService.getMyInfo();
@@ -103,15 +108,15 @@ public class UserServiceTest {
     }
 
     @Test
-    @WithMockUser(username = "annn") // Giả lập một user đã đăng nhập với username là "annn" để test phương thức getMyInfo, vì phương thức này cần lấy thông tin user từ SecurityContext
+    @WithMockUser(
+            username = "annn") // Giả lập một user đã đăng nhập với username là "annn" để test phương thức getMyInfo, vì
+    // phương thức này cần lấy thông tin user từ SecurityContext
     void getMyInfo_userNotExist_fail() {
         // GIVEN
-        when (userRepository.findByUsername(userCreationRequest.getUsername())).thenReturn(Optional.ofNullable(null));
+        when(userRepository.findByUsername(userCreationRequest.getUsername())).thenReturn(Optional.ofNullable(null));
 
         // WHEN
         var exception = Assertions.assertThrows(AppException.class, () -> userService.getMyInfo());
         assertThat(exception.getErrorCode().getCode()).isEqualTo(1006); // USER_NOT_EXISTS
-
     }
-
 }

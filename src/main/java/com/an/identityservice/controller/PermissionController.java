@@ -1,15 +1,17 @@
 package com.an.identityservice.controller;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.*;
+
 import com.an.identityservice.Service.PermissionService;
-import com.an.identityservice.dto.response.ApiResponse;
 import com.an.identityservice.dto.request.PermissionRequest;
+import com.an.identityservice.dto.response.ApiResponse;
 import com.an.identityservice.dto.response.PermissionResponse;
+
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/permissions")
@@ -27,7 +29,7 @@ public class PermissionController {
     }
 
     @GetMapping
-    ApiResponse<List<PermissionResponse>> getAll(){
+    ApiResponse<List<PermissionResponse>> getAll() {
         return ApiResponse.<List<PermissionResponse>>builder()
                 .result(permissionService.getAll())
                 .build();
@@ -36,7 +38,6 @@ public class PermissionController {
     @DeleteMapping("/{permission}")
     ApiResponse<Void> deletePermission(@PathVariable String permission) {
         permissionService.deletePermission(permission);
-        return ApiResponse.<Void>builder()
-                .build();
+        return ApiResponse.<Void>builder().build();
     }
 }

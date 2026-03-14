@@ -1,19 +1,21 @@
 package com.an.identityservice.controller;
 
+import java.util.List;
 
-import com.an.identityservice.Service.UserService;
-import com.an.identityservice.dto.response.ApiResponse;
-import com.an.identityservice.dto.request.UserCreationRequest;
-import com.an.identityservice.dto.request.UserUpdateRequest;
-import com.an.identityservice.dto.response.UserResponse;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import com.an.identityservice.Service.UserService;
+import com.an.identityservice.dto.request.UserCreationRequest;
+import com.an.identityservice.dto.request.UserUpdateRequest;
+import com.an.identityservice.dto.response.ApiResponse;
+import com.an.identityservice.dto.response.UserResponse;
+
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/users")
@@ -23,8 +25,10 @@ import java.util.List;
 public class UserController {
     UserService userService;
 
+    // spotless:off
     @PostMapping
-    // valid để đảm bảo rằng dữ liệu đầu vào phải tuân thủ các ràng buộc đã được định nghĩa trong UserCreationRequest, ví dụ như độ dài mật khẩu tối thiểu.
+    // valid để đảm bảo rằng dữ liệu đầu vào phải tuân thủ các ràng buộc đã được định nghĩa trong UserCreationRequest,
+    // ví dụ như độ dài mật khẩu tối thiểu.
     public ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreationRequest userCreationRequest) {
         log.debug("Controller: Create User");
         ApiResponse<UserResponse> response = new ApiResponse<>();
@@ -32,6 +36,7 @@ public class UserController {
         return response;
     }
 
+    //spotless:on
     @GetMapping
     ApiResponse<List<UserResponse>> getUsers() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -58,7 +63,8 @@ public class UserController {
     }
 
     @PutMapping("/{userid}")
-    ApiResponse<UserResponse> updateUser(@PathVariable String userid, @RequestBody UserUpdateRequest userUpdateRequest) {
+    ApiResponse<UserResponse> updateUser(
+            @PathVariable String userid, @RequestBody UserUpdateRequest userUpdateRequest) {
         return ApiResponse.<UserResponse>builder()
                 .result(userService.updateUser(userid, userUpdateRequest))
                 .build();
