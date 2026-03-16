@@ -1,0 +1,5 @@
+# Cấu hình cho môi trường production
+jwt:
+  # signerKey: => chuyển vào biến môi trường để bảo mật hơn: JWT_SIGNERKEY
+  valid-duration: 7200 # in seconds token het han su dung (demo)
+  refreshable-duration: 72000 # in seconds token duoc refrsh trong ..s sau khi het han su dung

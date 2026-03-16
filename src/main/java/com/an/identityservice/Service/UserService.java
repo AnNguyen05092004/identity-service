@@ -43,9 +43,9 @@ public class UserService {
     public UserResponse createUser(UserCreationRequest userCreationRequest) {
         log.info("Service: create user");
 
-//        if (userRepository.existsByUsername(userCreationRequest.getUsername())) {
-//            throw new AppException(ErrorCode.USER_EXISTS);
-//        }
+        //        if (userRepository.existsByUsername(userCreationRequest.getUsername())) {
+        //            throw new AppException(ErrorCode.USER_EXISTS);
+        //        }
 
         User user = userMapper.toUser(userCreationRequest);
         user.setPassword(passwordEncoder.encode(userCreationRequest.getPassword()));
@@ -55,7 +55,7 @@ public class UserService {
         // user.setRoles(roles);
 
         try {
-            user =userRepository.save(user);
+            user = userRepository.save(user);
         } catch (DataIntegrityViolationException e) {
             throw new AppException(ErrorCode.USER_EXISTS);
         }

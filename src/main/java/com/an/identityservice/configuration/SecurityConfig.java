@@ -67,7 +67,8 @@ public class SecurityConfig {
                 );
 
         http.csrf(AbstractHttpConfigurer::disable);
-        http.cors(cors -> {}); // ⭐ BẮT BUỘC phải cấu hình CORS nếu frontend và backend chạy trên các domain khác nhau, nếu không sẽ bị lỗi CORS khi
+        http.cors(cors -> {}); // ⭐ BẮT BUỘC phải cấu hình CORS nếu frontend và backend chạy trên các domain khác nhau,
+        // nếu không sẽ bị lỗi CORS khi
         return http.build();
     }
 
@@ -84,8 +85,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    // Cau hình CORS để cho phép các yêu cầu từ frontend (ví dụ: http://localhost:3000) có thể truy cập vào API của backend mà không bị chặn bởi chính sách cùng nguồn (same-origin policy) của trình duyệt.
-    public CorsFilter  corsFilter() {
+    // Cau hình CORS để cho phép các yêu cầu từ frontend (ví dụ: http://localhost:3000) có thể truy cập vào API của
+    // backend mà không bị chặn bởi chính sách cùng nguồn (same-origin policy) của trình duyệt.
+    public CorsFilter corsFilter() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.addAllowedOrigin("http://localhost:3000");
         corsConfiguration.addAllowedHeader("*");
