@@ -12,6 +12,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 // tham khảo trang spring security architecture
 
@@ -64,6 +67,7 @@ public class SecurityConfig {
                 );
 
         http.csrf(AbstractHttpConfigurer::disable);
+        http.cors(cors -> {}); // ⭐ BẮT BUỘC phải cấu hình CORS nếu frontend và backend chạy trên các domain khác nhau, nếu không sẽ bị lỗi CORS khi
         return http.build();
     }
 
@@ -77,6 +81,20 @@ public class SecurityConfig {
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
         return jwtAuthenticationConverter;
+    }
+
+    @Bean
+    // Cau hình CORS để cho phép các yêu cầu từ frontend (ví dụ: http://localhost:3000) có thể truy cập vào API của backend mà không bị chặn bởi chính sách cùng nguồn (same-origin policy) của trình duyệt.
+    public CorsFilter  corsFilter() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.addAllowedOrigin("http://localhost:3000");
+        corsConfiguration.addAllowedHeader("*");
+        corsConfiguration.addAllowedMethod("*");
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
+
+        return new CorsFilter(source);
     }
 
     //    @Bean

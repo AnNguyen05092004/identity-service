@@ -3,6 +3,7 @@ package com.an.identityservice.Service;
 import java.util.HashSet;
 import java.util.List;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -42,9 +43,9 @@ public class UserService {
     public UserResponse createUser(UserCreationRequest userCreationRequest) {
         log.info("Service: create user");
 
-        if (userRepository.existsByUsername(userCreationRequest.getUsername())) {
-            throw new AppException(ErrorCode.USER_EXISTS);
-        }
+//        if (userRepository.existsByUsername(userCreationRequest.getUsername())) {
+//            throw new AppException(ErrorCode.USER_EXISTS);
+//        }
 
         User user = userMapper.toUser(userCreationRequest);
         user.setPassword(passwordEncoder.encode(userCreationRequest.getPassword()));
@@ -52,7 +53,14 @@ public class UserService {
         HashSet<String> roles = new HashSet<>();
         roles.add(Role.USER.name());
         // user.setRoles(roles);
-        return userMapper.toUserResponse(userRepository.save(user));
+
+        try {
+            user =userRepository.save(user);
+        } catch (DataIntegrityViolationException e) {
+            throw new AppException(ErrorCode.USER_EXISTS);
+        }
+
+        return userMapper.toUserResponse(user);
     }
 
     // @PreAuthorize("hasRole('ADMIN')") // Lọc trc, Chỉ cho phép người dùng có vai trò ADMIN truy cập vào phương thức
