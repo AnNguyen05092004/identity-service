@@ -23,14 +23,19 @@ This microservice is responsible for:
 ## Docker guideline
 ### Build docker image
 `docker build -t <account>/identity-service:0.0.1 .`
+`docker build -t nguyenvanan2004/identity-service:0.0.1 .`
+
 ### Push docker image to Docker Hub
 `docker image push <account>/identity-service:0.0.1`
+`docker image push nguyenvanan2004/identity-service:0.0.1`
 ### Create network:
 `docker network create an-network`
 ### Start MySQL in an-network
 `docker run --network an-network --name mysql -p 3307:3306 -e MYSQL_ROOT_PASSWORD=An198205 -d mysql:lts`
 ### Run your application in an-network
 `docker run --name identity-service --network an-network -p 8080:8080 -e DBMS_CONNECTION=jdbc:mysql://mysql:3306/identity_service identity-service:0.0.1`
+## sau khi pull về run lại
+`docker run --name identity-service --network an-network -p 8080:8080 -e DBMS_CONNECTION=jdbc:mysql://mysql:3306/identity_service nguyenvanan2004/identity-service:0.0.1`
 
 ## Install Docker on ubuntu
 
