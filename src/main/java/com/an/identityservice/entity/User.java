@@ -24,9 +24,9 @@ public class User {
     String username;
 
     String password;
-    String firstName;
-    String lastName;
-    LocalDate dob;
+//    String firstName;  vì giờ đã có profile nên service này ko cần lưu thông tin này nữa
+//    String lastName;   UserCreattionRequest thì giữ nguyên vì còn map qua profilerequest
+//    LocalDate dob;
 
     @ManyToMany
     Set<Role> roles;

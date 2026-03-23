@@ -3,6 +3,8 @@ package com.an.identityservice.Service;
 import java.util.HashSet;
 import java.util.List;
 
+import com.an.identityservice.mapper.ProfileMapper;
+import com.an.identityservice.repository.httpclient.ProfileClient;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -39,6 +41,8 @@ public class UserService {
     RoleRepository roleRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
+    ProfileClient profileClient;
+    ProfileMapper profileMapper;
 
     public UserResponse createUser(UserCreationRequest userCreationRequest) {
         log.info("Service: create user");
@@ -56,9 +60,14 @@ public class UserService {
 
         try {
             user = userRepository.save(user);
-        } catch (DataIntegrityViolationException e) {
+        } catch (DataIntegrityViolationException e) { // lỗi duplicate vì đã đặt là unique
             throw new AppException(ErrorCode.USER_EXISTS);
         }
+        var profileRequest = profileMapper.toProfileCreationRequest(userCreationRequest);
+        profileRequest.setUserId(user.getId());
+        var profileResponse = profileClient.createProfile(profileRequest);
+
+        log.info("Service: create profile response: {}", profileResponse);
 
         return userMapper.toUserResponse(user);
     }

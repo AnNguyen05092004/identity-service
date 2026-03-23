@@ -20,3 +20,7 @@ jwt:
   signerKey: "1b60018ab05d0d557a8d97e1006bc1c9dd2c8a9e17d82806a4a5e76c5b6a14e6"
   valid-duration: 3600 # in seconds token het han su dung (demo)
   refreshable-duration: 36000 # in seconds token duoc refrsh trong ..s sau khi het han su dung
+
+app:
+  services:
+    profile: http://localhost:8081/profile
